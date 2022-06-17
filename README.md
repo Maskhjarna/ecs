@@ -1,11 +1,11 @@
+# Overview
+This repository hosts a single-include Entity Component System written in modern C++.
 
-A single-include Entity Component System (ECS) written in modern C++.
-
-## Example
+# Example usage
 ```c++
 auto registry = ecs::Registry{};
 
-for (int i = 0; i < 10; ++i)
+for (auto i = 0u; i < 10u; ++i)
 {
     auto entity = registry.create_entity();
     registry.assign<Position>(entity, {0, 0});
@@ -21,21 +21,21 @@ for (auto entity : registry.get(view))
     pos.y += vel.dy;
 }
 ```
-An extended, compiling example can be found in ```example.cpp```.
+An extended, compiling example is found in ```example.cpp```.
 
-## Implementation overview
-The maximum number of entities and component data types is static, but can be specified at compile time by defining the macros ```ECS_MAX_ENTITY_COUNT``` and ```ECS_MAX_COMPONENT_COUNT```.
-### Entities
-Entities are stored as 32-bit unsigned integers in a ```std::array``` with skip values enabling fast iteration when updating views.
+# Implementation overview
+The maximum number of entities and component data types is static, but can be specified at compile time by setting ```ECS_MAX_ENTITY_COUNT``` and ```ECS_MAX_COMPONENT_COUNT``` before including the library.
+## Entities
+Entities are stored as 32-bit unsigned integers in an ```std::array``` with skip values for faster iteration.
 
-### Components
-Data types that are registered as components have an ```std::array``` the size of the entity pool pre-allocated, allowing elements to be accessed in constant time. The array entry associated with any specific entity is inaccessible until the corresponding component has been assigned to that entity. Accessing the component of an entity after it or its component has been removed throws a runtime error to avoid unintended behaviour.
+## Components
+Data types registered as components have an ```std::array``` the size of the entity pool pre-allocated for constant time access. The array entry associated with any specific entity is inaccessible until the corresponding component has been assigned to that entity. Accessing the component of an entity after it or its component has been removed throws a runtime error.
 
-### Views
-Views are represented by 32-bit unsigned integers. Each view stores its entities by identifier in an ```std::unordered_set```. The set is kept up-to-date in regard to assignments and removals of components on entities, meaning the identifier never decays.
+## Views
+Views are represented by 32-bit unsigned integers. Each view stores the identifiers of its entities in an ```std::unordered_set```. The set is kept up-to-date in regard to assignments and removals of components on entities, meaning an identifier never decays.
 
-## Requirements
+# Requirements
 Compiles in C++14 or later. No external dependencies.
 
-## License
+# License
 Released under the MIT License. See LICENSE for more information.
